@@ -1,0 +1,57 @@
+# Alvyn Symbol - robots.txt
+# Website: https://alvynsymbol.github.io/
+# Public pages and assets are crawlable, including assets/medias/.
+# Section fragments and development files are excluded from crawling.
+# Each named crawler repeats the full policy: specific groups do not
+# inherit the rules from User-agent: *.
+
+# General search engine crawlers
+User-agent: *
+Allow: /
+Disallow: /sections/
+Disallow: /templates/
+Disallow: /scripts/
+Disallow: /docs/
+
+# ChatGPT Search
+User-agent: OAI-SearchBot
+Allow: /
+Disallow: /sections/
+Disallow: /templates/
+Disallow: /scripts/
+Disallow: /docs/
+
+# OpenAI GPTBot — allowed, matching the reference policy
+User-agent: GPTBot
+Allow: /
+Disallow: /sections/
+Disallow: /templates/
+Disallow: /scripts/
+Disallow: /docs/
+
+# Google Search
+User-agent: Googlebot
+Allow: /
+Disallow: /sections/
+Disallow: /templates/
+Disallow: /scripts/
+Disallow: /docs/
+
+# Google Image Search
+User-agent: Googlebot-Image
+Allow: /
+Disallow: /sections/
+Disallow: /templates/
+Disallow: /scripts/
+Disallow: /docs/
+
+# Bing Search
+User-agent: Bingbot
+Allow: /
+Disallow: /sections/
+Disallow: /templates/
+Disallow: /scripts/
+Disallow: /docs/
+
+# Sitemap — update this URL if the public domain or base path changes.
+Sitemap: https://alvynsymbol.github.io/sitemap.xml
