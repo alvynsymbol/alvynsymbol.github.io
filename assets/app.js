@@ -19,7 +19,7 @@ if(load) {
  const formula = document.querySelector('#demo-formula');
  const initial = output.innerHTML;
  load.addEventListener('click', () => {
-   output.textContent = 'Example data loaded. Ready to explore the relationship.';
+   output.textContent = document.querySelector('[data-complex-example]') ? 'Example dataset loaded. Explore three inputs and a nonlinear response.' : 'Example data loaded. Ready to explore the relationship.';
    chart.hidden = false; chart.classList.remove('revealed'); formula.hidden = true;
    discover.disabled = false; load.disabled = true;
  });
@@ -35,21 +35,16 @@ if(load) {
 }
 const contact = document.querySelector('#contact-form');
 if(contact) {
- if(config.contactEmail) {
-   contact.querySelector('[type=submit]').textContent = 'Open email message ↗';
-   contact.querySelector('.form-note').textContent = 'Opens your email app with a prepared message. You choose when to send it.';
- }
  contact.addEventListener('submit', event => {
   event.preventDefault();
   const data = new FormData(contact);
-  const message = `Name: ${data.get('name')}\nEmail: ${data.get('email')}\n\n${data.get('message')}`;
-  const field = document.querySelector('#prepared-message'); field.value = message; field.hidden = false;
-  if(config.contactEmail) {
-   location.href = `mailto:${encodeURIComponent(config.contactEmail)}?subject=${encodeURIComponent('Alvyn Symbol enquiry')}&body=${encodeURIComponent(message)}`;
-   contact.querySelector('.form-status').textContent = 'Your message is prepared below. Send it using your email app.';
-  } else {
-   contact.querySelector('.form-status').textContent = 'Message prepared below. It has not been sent. You can copy and save it while a contact channel is being added.';
-  }
+  const message = `Alvyn Symbol enquiry\nName: ${String(data.get('name')).trim()}\nEmail: ${String(data.get('email')).trim()}\n\n${String(data.get('message')).trim()}`;
+  const url = `https://wa.me/989126633870?text=${encodeURIComponent(message)}`;
+  const link = document.createElement('a');
+  link.href = url; link.target = '_blank'; link.rel = 'noopener noreferrer';
+  link.textContent = 'Continue to WhatsApp ↗';
+  contact.querySelector('.form-status').replaceChildren(document.createTextNode('Your message is ready. Review and send it in WhatsApp. '), link);
+  link.click();
  });
 }
 const license = document.querySelector('#license-form');
@@ -75,4 +70,36 @@ if(license) {
   } catch(error) {status.textContent=error.name==='TimeoutError' ? 'The request timed out. Please try again.' : error.message;}
   finally {button.disabled=false;}
  });
+}
+
+// Visual-only typewriter; the complete heading remains available to screen readers.
+const typedHeadline = document.querySelector('#typed-headline');
+if (typedHeadline) {
+ const phrases = ['When the formula speaks.', 'There’s a formula in your data.', 'A formula can reveal what AI cannot.'];
+ const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+ let phraseIndex = 0, position = phrases[0].length, deleting = true, typingTimer;
+ function renderHeadline(text) {
+  const match = /formula/i.exec(text);
+  if (!match) { typedHeadline.textContent = text; return; }
+  const word = document.createElement('span'); word.className = 'formula-word'; word.textContent = match[0];
+  typedHeadline.replaceChildren(document.createTextNode(text.slice(0, match.index)), word, document.createTextNode(text.slice(match.index + match[0].length)));
+ }
+ function tickHeadline() {
+  if (document.hidden || reducedMotion.matches) return;
+  const phrase = phrases[phraseIndex];
+  position += deleting ? -1 : 1;
+  renderHeadline(phrase.slice(0, position));
+  let delay = deleting ? 35 : 85;
+  if (position === 0) { deleting = false; phraseIndex = (phraseIndex + 1) % phrases.length; delay = 400; }
+  else if (position === phrase.length && !deleting) { deleting = true; delay = 2800; }
+  typingTimer = setTimeout(tickHeadline, delay);
+ }
+ function restartHeadline() {
+  clearTimeout(typingTimer);
+  if (reducedMotion.matches) {renderHeadline(phrases[0]);return;}
+  if (!document.hidden) typingTimer = setTimeout(tickHeadline, 2800);
+ }
+ reducedMotion.addEventListener('change', () => {phraseIndex=0;position=phrases[0].length;deleting=true;renderHeadline(phrases[0]);restartHeadline();});
+ document.addEventListener('visibilitychange', restartHeadline);
+ restartHeadline();
 }
