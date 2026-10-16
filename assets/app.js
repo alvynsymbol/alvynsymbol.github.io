@@ -12,25 +12,39 @@ document.querySelectorAll('.plan').forEach(plan => {
   }));
 });
 const load = document.querySelector('#load-data');
-if(load) {
+if (load) {
  const discover = document.querySelector('#discover');
  const output = document.querySelector('#demo-output');
+ const board = document.querySelector('.discovery-board');
  const chart = document.querySelector('.demo-chart');
  const formula = document.querySelector('#demo-formula');
- const initial = output.innerHTML;
+ const orb = document.querySelector('.thinking-orb');
+ const idle = document.querySelector('.board-idle');
+ let revealTimer;
  load.addEventListener('click', () => {
-   output.textContent = document.querySelector('[data-complex-example]') ? 'Example dataset loaded. Explore three inputs and a nonlinear response.' : 'Example data loaded. Ready to explore the relationship.';
-   chart.hidden = false; chart.classList.remove('revealed'); formula.hidden = true;
-   discover.disabled = false; load.disabled = true;
+  clearTimeout(revealTimer);
+  board.classList.remove('is-thinking', 'is-revealed');
+  board.setAttribute('aria-busy','false');
+  chart.hidden=false; formula.hidden=true; orb.hidden=true; idle.hidden=true;
+  discover.disabled=false; load.disabled=true;
+  output.textContent='72 synthetic observations loaded. Discover formula reveals the known example relationship.';
  });
  discover.addEventListener('click', () => {
-   chart.classList.add('revealed'); formula.hidden = false;
-   output.textContent = 'Illustration complete. A readable equation describes these example points.';
-   discover.disabled = true;
+  discover.disabled=true; orb.hidden=false;
+  board.classList.add('is-thinking'); board.setAttribute('aria-busy','true');
+  output.textContent='Preparing the example formula.';
+  revealTimer=setTimeout(() => {
+   orb.hidden=true; board.classList.remove('is-thinking');board.classList.add('is-revealed');
+   board.setAttribute('aria-busy','false');formula.hidden=false;
+   output.textContent='Example formula revealed. This illustration uses a known synthetic relationship, not the Alvyn engine.';
+  }, window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 350 : 2200);
  });
  document.querySelector('#replay').addEventListener('click', () => {
-   output.innerHTML = initial; chart.hidden = true; chart.classList.remove('revealed');
-   formula.hidden = true; discover.disabled = true; load.disabled = false;
+  clearTimeout(revealTimer);
+  board.classList.remove('is-thinking','is-revealed');board.setAttribute('aria-busy','false');
+  chart.hidden=true;formula.hidden=true;orb.hidden=true;idle.hidden=false;
+  discover.disabled=true;load.disabled=false;
+  output.textContent='Load the example data to begin.';
  });
 }
 const contact = document.querySelector('#contact-form');
@@ -102,4 +116,38 @@ if (typedHeadline) {
  reducedMotion.addEventListener('change', () => {phraseIndex=0;position=phrases[0].length;deleting=true;renderHeadline(phrases[0]);restartHeadline();});
  document.addEventListener('visibilitychange', restartHeadline);
  restartHeadline();
+}
+
+// Open relocated information panels when reached through footer links.
+function openLinkedDetail() {
+ const id = location.hash.slice(1);
+ const target = document.getElementById(id);
+ if (target && target.tagName === 'DETAILS') target.open = true;
+}
+window.addEventListener('hashchange', openLinkedDetail);
+openLinkedDetail();
+
+const walkthrough = document.querySelector('.walkthrough');
+if (walkthrough) {
+ const slides = [...walkthrough.querySelectorAll('.walkthrough-slide')];
+ const dots = [...walkthrough.querySelectorAll('.walkthrough-dot')];
+ const motion = matchMedia('(prefers-reduced-motion: reduce)');
+ let current = 0, paused = motion.matches, timer, hovering = false, focused = false;
+ function showSlide(index) {
+  current = index;
+  slides.forEach((slide,i) => {slide.classList.toggle('is-active',i===index);slide.setAttribute('aria-hidden',String(i!==index));});
+  dots.forEach((dot,i) => dot.setAttribute('aria-pressed',String(i===index)));
+ }
+ function scheduleSlide() {
+  clearTimeout(timer);
+  if (!paused && !hovering && !focused && !document.hidden) timer = setTimeout(() => {showSlide((current+1)%slides.length);scheduleSlide();},4000);
+ }
+ dots.forEach((dot,i) => dot.addEventListener('click',() => {showSlide(i);scheduleSlide();}));
+ walkthrough.addEventListener('pointerenter',() => {hovering=true;scheduleSlide();});
+ walkthrough.addEventListener('pointerleave',() => {hovering=false;scheduleSlide();});
+ walkthrough.addEventListener('focusin',() => {focused=true;scheduleSlide();});
+ walkthrough.addEventListener('focusout',event => {if(!walkthrough.contains(event.relatedTarget)){focused=false;scheduleSlide();}});
+ document.addEventListener('visibilitychange',scheduleSlide);
+ motion.addEventListener('change',() => {paused=motion.matches;scheduleSlide();});
+ scheduleSlide();
 }

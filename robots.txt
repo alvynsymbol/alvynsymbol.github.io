@@ -9,49 +9,49 @@
 User-agent: *
 Allow: /
 Disallow: /sections/
-Disallow: /templates/
-Disallow: /scripts/
-Disallow: /docs/
+Disallow: /assets/landing.html
+Disallow: /assets/build.py
+Disallow: /assets/README.md
 
 # ChatGPT Search
 User-agent: OAI-SearchBot
 Allow: /
 Disallow: /sections/
-Disallow: /templates/
-Disallow: /scripts/
-Disallow: /docs/
+Disallow: /assets/landing.html
+Disallow: /assets/build.py
+Disallow: /assets/README.md
 
 # OpenAI GPTBot — allowed, matching the reference policy
 User-agent: GPTBot
 Allow: /
 Disallow: /sections/
-Disallow: /templates/
-Disallow: /scripts/
-Disallow: /docs/
+Disallow: /assets/landing.html
+Disallow: /assets/build.py
+Disallow: /assets/README.md
 
 # Google Search
 User-agent: Googlebot
 Allow: /
 Disallow: /sections/
-Disallow: /templates/
-Disallow: /scripts/
-Disallow: /docs/
+Disallow: /assets/landing.html
+Disallow: /assets/build.py
+Disallow: /assets/README.md
 
 # Google Image Search
 User-agent: Googlebot-Image
 Allow: /
 Disallow: /sections/
-Disallow: /templates/
-Disallow: /scripts/
-Disallow: /docs/
+Disallow: /assets/landing.html
+Disallow: /assets/build.py
+Disallow: /assets/README.md
 
 # Bing Search
 User-agent: Bingbot
 Allow: /
 Disallow: /sections/
-Disallow: /templates/
-Disallow: /scripts/
-Disallow: /docs/
+Disallow: /assets/landing.html
+Disallow: /assets/build.py
+Disallow: /assets/README.md
 
 # Sitemap — update this URL if the public domain or base path changes.
 Sitemap: https://alvynsymbol.github.io/sitemap.xml
